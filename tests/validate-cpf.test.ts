@@ -17,6 +17,10 @@ describe('validateCPF', () => {
     assertEquals(sut('11111111111'), false)
   })
 
+  it('should return false for empty strings', () => {
+    assertEquals(sut(''), false)
+  })
+
   it('should accept dots, dashes and spaces in the cpf', () => {
     assertEquals(sut(' 347.867.458-12 '), true)
   })
