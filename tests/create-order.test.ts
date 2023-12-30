@@ -14,6 +14,17 @@ describe('createOrder', () => {
     assertThrows(() => sut(fakeOrder), 'Invalid Customer Document')
   })
 
+  it('should return 0 for empty an order', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: []
+    }
+
+    const finalPrice = sut(fakeOrder)
+
+    assertEquals(finalPrice, 0)
+  })
+
   it('should return the correct final price for the order', () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
