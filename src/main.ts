@@ -4,10 +4,8 @@ Deno.serve(async (req: Request) => {
   const body = await req.json()
 
   try {
-    const finalPrice = createOrder(body)
-    const responseBody = JSON.stringify({
-      total: finalPrice
-    })
+    const result = createOrder(body)
+    const responseBody = JSON.stringify(result)
 
     return new Response(responseBody, {
       status: 200,

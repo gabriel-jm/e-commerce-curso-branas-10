@@ -1,8 +1,18 @@
-import { describe, it } from "std/testing/bdd.ts";
+import { afterAll, beforeAll, describe, it } from "std/testing/bdd.ts";
+import { FakeTime } from 'std/testing/time.ts'
 import { Order, createOrder } from "../src/create-order.ts";
 import { assertEquals, assertThrows } from "std/assert/mod.ts";
 
 const sut = (order: Order) => createOrder(order)
+let fakeTime: FakeTime
+
+beforeAll(() => {
+  fakeTime = new FakeTime('2024-02-01')
+})
+
+afterAll(() => {
+  fakeTime.restore()
+})
 
 describe('createOrder', () => {
   it('should throw an error if receive an invalid CPF', () => {
@@ -20,9 +30,9 @@ describe('createOrder', () => {
       items: []
     }
 
-    const finalPrice = sut(fakeOrder)
+    const result = sut(fakeOrder)
 
-    assertEquals(finalPrice, 0)
+    assertEquals(result.total, 0)
   })
 
   it('should throw an error for invalid product id', () => {
@@ -37,6 +47,20 @@ describe('createOrder', () => {
     }
 
     assertThrows(() => sut(fakeOrder), 'Invalid Product ID')
+  })
+
+  it('should throw an error for invalid product quantity', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: -1
+        }
+      ]
+    }
+
+    assertThrows(() => sut(fakeOrder), 'Invalid Product Quantity')
   })
 
   it('should return the correct final price for the order', () => {
@@ -54,9 +78,9 @@ describe('createOrder', () => {
       ]
     }
 
-    const finalPrice = sut(fakeOrder)
+    const result = sut(fakeOrder)
 
-    assertEquals(finalPrice, 90)
+    assertEquals(result.total, 90)
   })
 
   it('should throw an error for invalid coupon code', () => {
@@ -72,6 +96,21 @@ describe('createOrder', () => {
     }
 
     assertThrows(() => sut(fakeOrder), 'Invalid Coupon Code')
+  })
+
+  it('should throw an error if the wanted coupon is expired', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: 1
+        }
+      ],
+      coupon: 'expired_coupon'
+    }
+
+    assertThrows(() => sut(fakeOrder), 'Provided Coupon is Expired')
   })
 
   it('should return the correct final price for an order with descont', () => {
@@ -90,8 +129,8 @@ describe('createOrder', () => {
       coupon: '10OFF'
     }
 
-    const finalPrice = sut(fakeOrder)
+    const result = sut(fakeOrder)
 
-    assertEquals(finalPrice, 81)
+    assertEquals(result.total, 81)
   })
 })
