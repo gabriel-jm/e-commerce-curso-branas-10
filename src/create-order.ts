@@ -1,21 +1,35 @@
 import { validateCPF } from "./validate-cpf.ts";
 
 type OrderItem = {
-  description: string
-  price: number
+  id: string
   quantity: number
-}
-
-type Coupon = {
-  name: string
-  percentage: number
 }
 
 export type Order = {
   customerDocument: string
   items: OrderItem[]
-  coupon?: Coupon
+  coupon?: string
 }
+
+const items = [
+  {
+    id: 'product_1',
+    price: 10,
+    description: 'Product A'
+  },
+  {
+    id: 'product_2',
+    price: 15,
+    description: 'Product B'
+  }
+]
+
+const coupons = [
+  {
+    code: '10OFF',
+    percentage: 10
+  }
+]
 
 export function createOrder(order: Order) {
   const isValid = validateCPF(order.customerDocument)
@@ -24,12 +38,24 @@ export function createOrder(order: Order) {
     throw new Error('Invalid Customer Document')
   }
 
-  const fullPrice = order.items.reduce((acc, item) => {
-    return acc + item.price * item.quantity
+  const fullPrice = order.items.reduce((acc, orderItem) => {
+    const item = items.find(i => i.id === orderItem.id)
+
+    if (!item) {
+      throw new Error('Invalid Product ID')
+    }
+    
+    return acc + item.price * orderItem.quantity
   }, 0)
 
   if (order.coupon) {
-    const descont = fullPrice * (order.coupon.percentage / 100)
+    const coupon = coupons.find(c => c.code === order.coupon)
+
+    if (!coupon) {
+      throw new Error('Invalid Coupon Code')
+    }
+
+    const descont = fullPrice * (coupon.percentage / 100)
     return fullPrice - descont
   }
 

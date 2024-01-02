@@ -25,18 +25,30 @@ describe('createOrder', () => {
     assertEquals(finalPrice, 0)
   })
 
+  it('should throw an error for invalid product id', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'invalid_product',
+          quantity: 1
+        }
+      ]
+    }
+
+    assertThrows(() => sut(fakeOrder), 'Invalid Product ID')
+  })
+
   it('should return the correct final price for the order', () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
         {
-          description: 'any description',
-          price: 10,
+          id: 'product_1',
           quantity: 3
         },
         {
-          description: 'any description',
-          price: 25,
+          id: 'product_2',
           quantity: 4
         }
       ]
@@ -44,7 +56,22 @@ describe('createOrder', () => {
 
     const finalPrice = sut(fakeOrder)
 
-    assertEquals(finalPrice, 130)
+    assertEquals(finalPrice, 90)
+  })
+
+  it('should throw an error for invalid coupon code', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: 1
+        }
+      ],
+      coupon: 'invalid_coupon'
+    }
+
+    assertThrows(() => sut(fakeOrder), 'Invalid Coupon Code')
   })
 
   it('should return the correct final price for an order with descont', () => {
@@ -52,24 +79,19 @@ describe('createOrder', () => {
       customerDocument: '347.867.458-12',
       items: [
         {
-          description: 'any description',
-          price: 10,
+          id: 'product_1',
           quantity: 3
         },
         {
-          description: 'any description',
-          price: 25,
+          id: 'product_2',
           quantity: 4
         }
       ],
-      coupon: {
-        name: '10% OFF',
-        percentage: 10
-      }
+      coupon: '10OFF'
     }
 
     const finalPrice = sut(fakeOrder)
 
-    assertEquals(finalPrice, 117)
+    assertEquals(finalPrice, 81)
   })
 })
