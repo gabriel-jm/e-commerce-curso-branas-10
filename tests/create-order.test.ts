@@ -132,7 +132,6 @@ describe('createOrder', () => {
     const result = sut(fakeOrder)
 
     assertEquals(result.total, 81)
-    assertEquals(result.freight, 40)
   })
 
   it('should calculate the correct freight value', () => {

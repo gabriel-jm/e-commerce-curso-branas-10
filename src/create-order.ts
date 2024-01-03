@@ -55,21 +55,7 @@ export function createOrder(order: Order) {
   if (!isValid) {
     throw new Error('Invalid Customer Document')
   }
-
-  // let fullPrice = order.items.reduce((acc, orderItem) => {
-  //   if (orderItem.quantity <= 0) {
-  //     throw new Error('Invalid Product Quantity')
-  //   }
-    
-  //   const item = items.find(i => i.id === orderItem.id)
-
-  //   if (!item) {
-  //     throw new Error('Invalid Product ID')
-  //   }
-    
-  //   return acc + item.price * orderItem.quantity
-  // }, 0)
-
+  
   const distance = 1000
 
   const values = order.items.reduce((acc, orderItem) => {
