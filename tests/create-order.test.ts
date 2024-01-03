@@ -132,5 +132,26 @@ describe('createOrder', () => {
     const result = sut(fakeOrder)
 
     assertEquals(result.total, 81)
+    assertEquals(result.freight, 40)
+  })
+
+  it('should calculate the correct freight value', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: 3
+        },
+        {
+          id: 'product_2',
+          quantity: 4
+        }
+      ]
+    }
+
+    const result = sut(fakeOrder)
+
+    assertEquals(result.freight, 40)
   })
 })
