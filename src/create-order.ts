@@ -88,12 +88,10 @@ export function createOrder(order: Order) {
       throw new Error('Invalid Coupon Code')
     }
 
-    if (new Date(coupon.expiresIn) < new Date()) {
-      throw new Error('Provided Coupon is Expired')
+    if (new Date(coupon.expiresIn) >= new Date()) {
+      const descont = values.total * (coupon.percentage / 100)
+      values.total -= descont
     }
-
-    const descont = values.total * (coupon.percentage / 100)
-    values.total -= descont
   }
 
   return values

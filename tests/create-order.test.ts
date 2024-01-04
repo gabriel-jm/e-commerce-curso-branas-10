@@ -98,19 +98,25 @@ describe('createOrder', () => {
     assertThrows(() => sut(fakeOrder), 'Invalid Coupon Code')
   })
 
-  it('should throw an error if the wanted coupon is expired', () => {
+  it('should not apply the descont if the wanted coupon is expired', () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
         {
           id: 'product_1',
-          quantity: 1
+          quantity: 3
+        },
+        {
+          id: 'product_2',
+          quantity: 4
         }
       ],
       coupon: 'expired_coupon'
     }
+    
+    const result = sut(fakeOrder)
 
-    assertThrows(() => sut(fakeOrder), 'Provided Coupon is Expired')
+    assertEquals(result.total, 90)
   })
 
   it('should return the correct final price for an order with descont', () => {
