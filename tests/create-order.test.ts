@@ -49,6 +49,24 @@ describe('createOrder', () => {
     assertThrows(() => sut(fakeOrder), 'Invalid Product ID')
   })
 
+  it('should throw an error if has repeated products in order', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: 1
+        },
+        {
+          id: 'product_1',
+          quantity: 1
+        }
+      ]
+    }
+
+    assertThrows(() => sut(fakeOrder), 'Cannot add the same product multiple times')
+  })
+
   it('should throw an error for invalid product quantity', () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
@@ -80,7 +98,7 @@ describe('createOrder', () => {
 
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 90)
+    assertEquals(result.total, 130)
   })
 
   it('should throw an error for invalid coupon code', () => {
@@ -116,7 +134,7 @@ describe('createOrder', () => {
     
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 90)
+    assertEquals(result.total, 130)
   })
 
   it('should return the correct final price for an order with descont', () => {
@@ -137,7 +155,7 @@ describe('createOrder', () => {
 
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 81)
+    assertEquals(result.total, 121)
   })
 
   it('should calculate the correct freight value', () => {
@@ -157,6 +175,7 @@ describe('createOrder', () => {
 
     const result = sut(fakeOrder)
 
+    assertEquals(result.total, 130)
     assertEquals(result.freight, 40)
   })
 })

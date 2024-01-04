@@ -58,6 +58,7 @@ export function createOrder(order: Order) {
   
   const distance = 1000
 
+  const knownItems: string[] = []
   const values = order.items.reduce((acc, orderItem) => {
     if (orderItem.quantity <= 0) {
       throw new Error('Invalid Product Quantity')
@@ -69,6 +70,11 @@ export function createOrder(order: Order) {
       throw new Error('Invalid Product ID')
     }
 
+    if (knownItems.includes(item.id)) {
+      throw new Error('Cannot add the same product multiple times')
+    }
+
+    knownItems.push(item.id)
     const { dimension, weight } = item
     const volume = dimension.height * dimension.width * dimension.depth
     const density = weight / volume
@@ -93,6 +99,8 @@ export function createOrder(order: Order) {
       values.total -= descont
     }
   }
+
+  values.total += values.freight
 
   return values
 }
