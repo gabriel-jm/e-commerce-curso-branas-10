@@ -98,7 +98,7 @@ describe('createOrder', () => {
 
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 130)
+    assertEquals(result.total, 240)
   })
 
   it('should throw an error for invalid coupon code', () => {
@@ -134,7 +134,7 @@ describe('createOrder', () => {
     
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 130)
+    assertEquals(result.total, 240)
   })
 
   it('should return the correct final price for an order with descont', () => {
@@ -155,7 +155,7 @@ describe('createOrder', () => {
 
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 121)
+    assertEquals(result.total, 231)
   })
 
   it('should calculate the correct freight value', () => {
@@ -175,7 +175,7 @@ describe('createOrder', () => {
 
     const result = sut(fakeOrder)
 
-    assertEquals(result.total, 130)
-    assertEquals(result.freight, 40)
+    assertEquals(result.freight, 150)
+    assertEquals(result.total, 240)
   })
 })

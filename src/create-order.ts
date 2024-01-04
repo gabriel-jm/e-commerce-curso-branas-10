@@ -78,12 +78,12 @@ export function createOrder(order: Order) {
     const { dimension, weight } = item
     const volume = dimension.height * dimension.width * dimension.depth
     const density = weight / volume
-    const itemFreight = distance * volume * (density / 100)
+    const itemFreight = (distance * volume * (density / 100)) * orderItem.quantity
     const finalPrice = item.price * orderItem.quantity
 
     return {
       total: acc.total + finalPrice,
-      freight: acc.freight + (itemFreight < 10 ? 10 : itemFreight)
+      freight: acc.freight + (itemFreight < 10 ? 10 : itemFreight) 
     }
   }, { total: 0, freight: 0 })
 
