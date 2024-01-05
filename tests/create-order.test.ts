@@ -178,4 +178,21 @@ describe('createOrder', () => {
     assertEquals(result.freight, 150)
     assertEquals(result.total, 240)
   })
+
+  it('should consider the minimum freight', () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: 1
+        }
+      ]
+    }
+
+    const result = sut(fakeOrder)
+
+    assertEquals(result.freight, 10)
+    assertEquals(result.total, 20)
+  })
 })
