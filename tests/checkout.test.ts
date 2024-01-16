@@ -1,9 +1,12 @@
 import { afterAll, beforeAll, describe, it } from "std/testing/bdd.ts";
 import { FakeTime } from 'std/testing/time.ts'
-import { Order, createOrder } from "../src/create-order.ts";
-import { assertEquals, assertThrows } from "std/assert/mod.ts";
+import { assertEquals, assertRejects } from "std/assert/mod.ts";
+import { Checkout } from "../src/checkout.ts";
 
-const sut = (order: Order) => createOrder(order)
+function makeSut() {
+  const sut = new Checkout()
+  return sut
+}
 let fakeTime: FakeTime
 
 beforeAll(() => {
@@ -14,23 +17,26 @@ afterAll(() => {
   fakeTime.restore()
 })
 
-describe('createOrder', () => {
+describe('Checkout', () => {
   it('should throw an error if receive an invalid CPF', () => {
     const fakeOrder = {
       customerDocument: '123',
       items: []
     }
     
-    assertThrows(() => sut(fakeOrder), 'Invalid Customer Document')
+    const sut = makeSut()
+
+    assertRejects(() => sut.execute(fakeOrder), 'Invalid Customer Document')
   })
 
-  it('should return 0 for an empty order', () => {
+  it('should return 0 for an empty order', async () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: []
     }
 
-    const result = sut(fakeOrder)
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
 
     assertEquals(result.total, 0)
   })
@@ -46,7 +52,9 @@ describe('createOrder', () => {
       ]
     }
 
-    assertThrows(() => sut(fakeOrder), 'Invalid Product ID')
+    const sut = makeSut()
+
+    assertRejects(() => sut.execute(fakeOrder), 'Invalid Product ID')
   })
 
   it('should throw an error if has repeated products in order', () => {
@@ -64,7 +72,9 @@ describe('createOrder', () => {
       ]
     }
 
-    assertThrows(() => sut(fakeOrder), 'Cannot add the same product multiple times')
+    const sut = makeSut()
+
+    assertRejects(() => sut.execute(fakeOrder), 'Cannot add the same product multiple times')
   })
 
   it('should throw an error for invalid product quantity', () => {
@@ -78,10 +88,12 @@ describe('createOrder', () => {
       ]
     }
 
-    assertThrows(() => sut(fakeOrder), 'Invalid Product Quantity')
+    const sut = makeSut()
+
+    assertRejects(() => sut.execute(fakeOrder), 'Invalid Product Quantity')
   })
 
-  it('should return the correct final price for the order', () => {
+  it('should return the correct final price for the order', async () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
@@ -96,7 +108,8 @@ describe('createOrder', () => {
       ]
     }
 
-    const result = sut(fakeOrder)
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
 
     assertEquals(result.total, 240)
   })
@@ -113,10 +126,12 @@ describe('createOrder', () => {
       coupon: 'invalid_coupon'
     }
 
-    assertThrows(() => sut(fakeOrder), 'Invalid Coupon Code')
+    const sut = makeSut()
+
+    assertRejects(() => sut.execute(fakeOrder), 'Invalid Coupon Code')
   })
 
-  it('should not apply the descont if the wanted coupon is expired', () => {
+  it('should not apply the descont if the wanted coupon is expired', async () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
@@ -132,12 +147,13 @@ describe('createOrder', () => {
       coupon: 'expired_coupon'
     }
     
-    const result = sut(fakeOrder)
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
 
     assertEquals(result.total, 240)
   })
 
-  it('should return the correct final price for an order with descont', () => {
+  it('should return the correct final price for an order with descont', async () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
@@ -153,12 +169,13 @@ describe('createOrder', () => {
       coupon: '10OFF'
     }
 
-    const result = sut(fakeOrder)
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
 
     assertEquals(result.total, 231)
   })
 
-  it('should calculate the correct freight value', () => {
+  it('should calculate the correct freight value', async () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
@@ -173,13 +190,14 @@ describe('createOrder', () => {
       ]
     }
 
-    const result = sut(fakeOrder)
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
 
     assertEquals(result.freight, 150)
     assertEquals(result.total, 240)
   })
 
-  it('should consider the minimum freight', () => {
+  it('should consider the minimum freight', async () => {
     const fakeOrder = {
       customerDocument: '347.867.458-12',
       items: [
@@ -190,7 +208,8 @@ describe('createOrder', () => {
       ]
     }
 
-    const result = sut(fakeOrder)
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
 
     assertEquals(result.freight, 10)
     assertEquals(result.total, 20)

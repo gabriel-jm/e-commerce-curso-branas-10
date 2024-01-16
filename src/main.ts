@@ -1,10 +1,11 @@
-import { createOrder } from "./create-order.ts";
+import { Checkout } from "./checkout.ts";
 
 Deno.serve(async (req: Request) => {
   const body = await req.json()
 
   try {
-    const result = createOrder(body)
+    const checkout = new Checkout()
+    const result = await checkout.execute(body)
     const responseBody = JSON.stringify(result)
 
     return new Response(responseBody, {
