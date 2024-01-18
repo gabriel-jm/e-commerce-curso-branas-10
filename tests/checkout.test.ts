@@ -214,4 +214,21 @@ describe('Checkout', () => {
     assertEquals(result.freight, 10)
     assertEquals(result.total, 20)
   })
+
+  it('should return the order\'s code', async () => {
+    const fakeOrder = {
+      customerDocument: '347.867.458-12',
+      items: [
+        {
+          id: 'product_1',
+          quantity: 1
+        }
+      ]
+    }
+
+    const sut = makeSut()
+    const result = await sut.execute(fakeOrder)
+
+    assertEquals(result.code, '20240000001')
+  })
 })

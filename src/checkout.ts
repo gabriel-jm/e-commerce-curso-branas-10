@@ -23,7 +23,11 @@ export class Checkout {
     
     const distance = 1000
     const knownItems: string[] = []
-    const values = { total: 0, freight: 0 }
+    const values = {
+      total: 0,
+      freight: 0,
+      code: `${new Date().getFullYear()}0000001`
+    }
 
     for (const orderItem of input.items) {
       if (orderItem.quantity <= 0) {
