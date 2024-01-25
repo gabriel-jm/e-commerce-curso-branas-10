@@ -1,5 +1,5 @@
-import { MemoryCouponRepository } from "./repositories/memory-coupon-repository.ts";
-import { MemoryProductRepository } from "./repositories/memory-product-repository.ts";
+import { CouponRepository } from "./repositories/coupon-repository.ts";
+import { ProductRepository } from './repositories/product-repository.ts'
 import { validateCPF } from "./validate-cpf.ts";
 
 type OrderItem = {
@@ -14,6 +14,11 @@ export type CheckoutInput = {
 }
 
 export class Checkout {
+  constructor(
+    private readonly couponRepository: CouponRepository,
+    private readonly productRepository: ProductRepository
+  ) {}
+
   async execute(input: CheckoutInput) {
     const isValid = validateCPF(input.customerDocument)
 
@@ -34,8 +39,7 @@ export class Checkout {
         throw new Error('Invalid Product Quantity')
       }
       
-      const productRepository = new MemoryProductRepository()
-      const item = await productRepository.getById(orderItem.id)
+      const item = await this.productRepository.getById(orderItem.id)
 
       if (!item) {
         throw new Error('Invalid Product ID')
@@ -57,8 +61,7 @@ export class Checkout {
     }
 
     if (input.coupon) {
-      const couponRepository = new MemoryCouponRepository()
-      const coupon = await couponRepository.getByCode(input.coupon)
+      const coupon = await this.couponRepository.getByCode(input.coupon)
 
       if (!coupon) {
         throw new Error('Invalid Coupon Code')

@@ -1,3 +1,5 @@
+import { CouponRepository } from './coupon-repository.ts'
+
 const coupons = [
   {
     code: '10OFF',
@@ -11,7 +13,7 @@ const coupons = [
   }
 ]
 
-export class MemoryCouponRepository {
+export class MemoryCouponRepository implements CouponRepository {
   getByCode(code: string) {
     return Promise.resolve(coupons.find(c => c.code === code))
   }

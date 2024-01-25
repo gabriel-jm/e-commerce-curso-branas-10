@@ -1,3 +1,5 @@
+import { ProductRepository } from './product-repository.ts'
+
 const products = [
   {
     id: 'product_1',
@@ -23,7 +25,7 @@ const products = [
   }
 ]
 
-export class MemoryProductRepository {
+export class MemoryProductRepository implements ProductRepository {
   getById(id: string) {
     return Promise.resolve(products.find(i => i.id === id))
   }

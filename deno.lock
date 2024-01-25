@@ -42,6 +42,7 @@
     "https://deno.land/std@0.210.0/testing/_test_suite.ts": "30f018feeb3835f12ab198d8a518f9089b1bcb2e8c838a8b615ab10d5005465c",
     "https://deno.land/std@0.210.0/testing/_time.ts": "fecaf6fc7277d240d11b0de2e93b1c93ebbb4a3a61f0cb0b1741f66f69a4d22b",
     "https://deno.land/std@0.210.0/testing/bdd.ts": "c41f019786c4a9112aadb7e5a7bbcc711f58429ac5904b3855fa248ba5fa0ba6",
+    "https://deno.land/std@0.210.0/testing/mock.ts": "350211037129efa675592a3d7cdccbca3825000168ebebb3862a70b5af3b2f20",
     "https://deno.land/std@0.210.0/testing/time.ts": "4a0fac2af7f7a1dedbc47e1c6e58df09fc1b7fd584cf8481ec9a32995e75ada1"
   }
 }
